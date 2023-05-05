@@ -17,7 +17,7 @@ public class App {
             PrintStream streamSaida = new PrintStream (new File("resultado.csv"), Charset.forName("UTF-8"));
             System.setOut(streamSaida); // Usa como saida um arquivo
         } catch (Exception e) {
-            System.out.println(e);
+            System.err.println(e);
         }
         entrada.useLocale(Locale.ENGLISH);
     }
@@ -42,29 +42,34 @@ public class App {
     private void lerAudiovisuais(Scanner entrada, Acervo acervo) {
         int qtdCadastrados = 0;
         while (entrada.hasNextLine()) {
-            String linha = entrada.nextLine();
-            String[] tokens = linha.split(";");
-            AudioVisual audioVisual;
+            try {
+                String linha = entrada.nextLine();
+                String[] tokens = linha.split(";");
+                AudioVisual audioVisual;
 
-            // o formato de dados.csv é: titulo;precobase;tipo;duração_categoria
-            // tokens[] vai ser um array no formato: [titulo, precobase, tipo, duracao_categoria]
-            // logo: tokens[2] vai ser o tipo de AudioVisual (1 = bluray e 2 = game)
-            int tipoAux = Integer.parseInt(tokens[2]);
-            String titulo = tokens[0];
-            double precoBase = Double.parseDouble(tokens[1]);
+                // o formato de dados.csv é: titulo;precobase;tipo;duração_categoria
+                // tokens[] vai ser um array no formato: [titulo, precobase, tipo, duracao_categoria]
+                // logo: tokens[2] vai ser o tipo de AudioVisual (1 = bluray e 2 = game)
+                int tipoAux = Integer.parseInt(tokens[2]);
+                String titulo = tokens[0];
+                double precoBase = Double.parseDouble(tokens[1]);
 
-            if (tipoAux == 1) { // checagem do tipo de audiovisual
-                int duracao = Integer.parseInt(tokens[3]);
-                audioVisual = new BluRay(titulo, precoBase, duracao);
-            } else {
-                Categoria categoria = Categoria.valueOf(tokens[3]);
-                audioVisual = new Game(titulo, precoBase, categoria);
+                if (tipoAux == 1) { // checagem do tipo de audiovisual
+                    int duracao = Integer.parseInt(tokens[3]);
+                    audioVisual = new BluRay(titulo, precoBase, duracao);
+                } else {
+                    Categoria categoria = Categoria.valueOf(tokens[3]);
+                    audioVisual = new Game(titulo, precoBase, categoria);
+                }
+
+                // adiciona o audio visual na colecao
+                if (acervo.addAudioVisual(audioVisual))
+                    qtdCadastrados++;
+
+            } catch (ArrayIndexOutOfBoundsException e) {
+                System.err.println("ERRO: Numero invalido de itens em linha");
+                e.printStackTrace();
             }
-
-            // adiciona o audio visual na colecao
-            if (acervo.addAudioVisual(audioVisual))
-                qtdCadastrados++;
-
         }
         System.out.printf("1;%d\n", qtdCadastrados);
     }
