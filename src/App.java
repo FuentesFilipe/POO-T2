@@ -55,6 +55,12 @@ public class App {
                 String titulo = tokens[0];
                 double precoBase = Double.parseDouble(tokens[1]);
 
+                if (tipoAux != 1 && tipoAux != 2) {
+                    throw new IllegalArgumentException("Codigo de audio visual invalido: " + tipoAux);
+                } else if (precoBase < 0) {
+                    throw new IllegalArgumentException("Preco base nao pode ser negativo: " + precoBase);
+                }
+
                 if (tipoAux == 1) { // checagem do tipo de audiovisual
                     int duracao = Integer.parseInt(tokens[3]);
                     audioVisual = new BluRay(titulo, precoBase, duracao);
@@ -69,6 +75,8 @@ public class App {
 
             } catch (ArrayIndexOutOfBoundsException e) {
                 System.err.println("ERRO: Numero invalido de itens em linha");
+                e.printStackTrace();
+            } catch (IllegalArgumentException e) {
                 e.printStackTrace();
             }
         }
