@@ -11,6 +11,7 @@ public class App {
     private Scanner entrada = null; // Atributo para entrada de dados
     // Construtor
     public App() {
+        Locale.setDefault(Locale.ENGLISH);
         try {
             BufferedReader streamEntrada = new BufferedReader(new FileReader("dados.csv"));
             entrada = new Scanner(streamEntrada); // Usa como entrada um arquivo
