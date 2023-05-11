@@ -20,7 +20,6 @@ public class App {
         } catch (Exception e) {
             System.err.println(e);
         }
-        entrada.useLocale(Locale.ENGLISH);
     }
 
     public void executa() {
